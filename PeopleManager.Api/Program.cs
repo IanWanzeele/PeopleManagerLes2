@@ -14,6 +14,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<PeopleManagerDbContext>(options =>
 {
     options.UseInMemoryDatabase(nameof(PeopleManagerDbContext));
+   
 });
 
 
@@ -27,6 +28,11 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+     using var scope = app.Services.CreateScope();
+     var peopleManagerDbContext = scope.ServiceProvider.GetRequiredService<PeopleManagerDbContext>();
+     peopleManagerDbContext.Seed();
+   
 }
 
 app.UseHttpsRedirection();
