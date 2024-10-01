@@ -21,7 +21,7 @@ namespace PeopleManager.Api.Controllers
 
         //Get (one) GET
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             var person = await _personService.Get(id);
             return Ok(person);
@@ -29,7 +29,7 @@ namespace PeopleManager.Api.Controllers
 
         //Create POST
         [HttpPost]
-        public async Task<IActionResult> Create(Person person)
+        public async Task<IActionResult> Create([FromBody]Person person)
         {
             var createdPerson = await _personService.Create(person);
             return Ok(createdPerson);
@@ -37,7 +37,7 @@ namespace PeopleManager.Api.Controllers
 
         //Update PUT
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, Person person)
+        public async Task<IActionResult> Update([FromRoute]int id, Person person)
         {
             var updatedPerson = await _personService.Update(id, person);
             return Ok(updatedPerson);
@@ -45,7 +45,7 @@ namespace PeopleManager.Api.Controllers
 
         //Delete DELETE
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             await _personService.Delete(id);
             return Ok();
