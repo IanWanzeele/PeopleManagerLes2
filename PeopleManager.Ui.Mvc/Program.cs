@@ -1,6 +1,4 @@
-using Microsoft.EntityFrameworkCore;
-using PeopleManager.Core;
-using PeopleManager.Services;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
