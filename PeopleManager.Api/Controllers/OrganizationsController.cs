@@ -20,7 +20,7 @@ namespace PeopleManager.Api.Controllers
 
         //Get (one) GET
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> Get(int id)
+        public async Task<IActionResult> Get([FromRoute]int id)
         {
             var organization = await _organizationService.Get(id);
             return Ok(organization);
@@ -28,7 +28,7 @@ namespace PeopleManager.Api.Controllers
 
         //Create POST
         [HttpPost]
-        public async Task<IActionResult> Create(Organization organization)
+        public async Task<IActionResult> Create([FromBody]Organization organization)
         {
             var createdOrganization = await _organizationService.Create(organization);
             return Ok(createdOrganization);
@@ -36,7 +36,7 @@ namespace PeopleManager.Api.Controllers
 
         //Update PUT
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, Organization organization)
+        public async Task<IActionResult> Update([FromRoute]int id, Organization organization)
         {
             var updatedOrganization = await _organizationService.Update(id, organization);
             return Ok(updatedOrganization);
@@ -44,7 +44,7 @@ namespace PeopleManager.Api.Controllers
 
         //Delete DELETE
         [HttpDelete("{id:int}")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> Delete([FromRoute]int id)
         {
             await _organizationService.Delete(id);
             return Ok();
