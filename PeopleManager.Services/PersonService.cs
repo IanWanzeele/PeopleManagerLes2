@@ -21,6 +21,7 @@ namespace PeopleManager.Services
             return await _dbContext.People
                 .Select(p => new PersonResult
                 {
+                    Id = p.Id,
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     Email = p.Email,
