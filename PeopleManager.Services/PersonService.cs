@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PeopleManager.Core;
+using PeopleManager.Dto.Requests;
+using PeopleManager.Dto.Results;
 using PeopleManager.Model;
 
 namespace PeopleManager.Services
@@ -14,48 +16,71 @@ namespace PeopleManager.Services
         }
 
         //Find
-        public async Task<IList<Person>> Find()
+        public async Task<IList<PersonResult>> Find()
         {
             return await _dbContext.People
-                .Include(p => p.Organization)
+                .Select(p => new PersonResult
+                {
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Email = p.Email,
+                    OrganizationId = p.OrganizationId,
+                    OrganizationName = p.Organization != null ? p.Organization.Name : null
+                })
                 .ToListAsync();
         }
 
         //Get (by id)
-        public async Task<Person?> Get(int id)
+        public async Task<PersonResult?> Get(int id)
         {
             return await _dbContext.People
+                .Select(p => new PersonResult
+                {
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    Email = p.Email,
+                    OrganizationId = p.OrganizationId,
+                    OrganizationName = p.Organization != null ? p.Organization.Name : null
+                })
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         //Create
-        public async Task<Person?> Create(Person person)
+        public async Task<PersonResult?> Create(PersonRequest request)
         {
+            var person = new Person
+            {
+                FirstName = request.FirstName,
+                LastName = request.LastName,
+                Email = request.Email,
+                OrganizationId = request.OrganizationId,
+            };
+
             _dbContext.People.Add(person);
             await _dbContext.SaveChangesAsync();
 
-            return person;
+            return await Get(person.Id);
         }
 
         //Update
-        public async Task<Person?> Update(int id, Person person)
+        public async Task<PersonResult?> Update(int id, PersonRequest request)
         {
-            var dbPerson = await _dbContext.People
+            var person = await _dbContext.People
                 .FirstOrDefaultAsync(p => p.Id == id);
 
-            if (dbPerson is null)
+            if (person is null)
             {
                 return null;
             }
 
-            dbPerson.FirstName = person.FirstName;
-            dbPerson.LastName = person.LastName;
-            dbPerson.Email = person.Email;
-            dbPerson.OrganizationId = person.OrganizationId;
+            person.FirstName = request.FirstName;
+            person.LastName = request.LastName;
+            person.Email = request.Email;
+            person.OrganizationId = request.OrganizationId;
 
             await _dbContext.SaveChangesAsync();
 
-            return dbPerson;
+            return await Get(id);
         }
 
         //Delete

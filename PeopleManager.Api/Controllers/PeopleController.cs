@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using PeopleManager.Dto.Requests;
 using PeopleManager.Model;
 using PeopleManager.Services;
 
@@ -29,17 +30,17 @@ namespace PeopleManager.Api.Controllers
 
         //Create POST
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody]Person person)
+        public async Task<IActionResult> Create([FromBody]PersonRequest request)
         {
-            var createdPerson = await _personService.Create(person);
+            var createdPerson = await _personService.Create(request);
             return Ok(createdPerson);
         }
 
         //Update PUT
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update([FromRoute]int id, Person person)
+        public async Task<IActionResult> Update([FromRoute]int id, PersonRequest request)
         {
-            var updatedPerson = await _personService.Update(id, person);
+            var updatedPerson = await _personService.Update(id, request);
             return Ok(updatedPerson);
         }
 
