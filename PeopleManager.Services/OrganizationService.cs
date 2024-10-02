@@ -3,6 +3,7 @@ using PeopleManager.Core;
 using PeopleManager.Dto.Requests;
 using PeopleManager.Dto.Results;
 using PeopleManager.Model;
+using Vives.Services.Model;
 
 namespace PeopleManager.Services
 {
@@ -44,8 +45,19 @@ namespace PeopleManager.Services
         }
 
         //Create
-        public async Task<OrganizationResult?> Create(OrganizationRequest request)
+        public async Task<ServiceResult<OrganizationResult>> Create(OrganizationRequest request)
         {
+            var serviceResult = new ServiceResult<OrganizationResult>();
+            if (string.IsNullOrWhiteSpace(request.Name))
+            {
+                serviceResult.Messages.Add(new ServiceMessage
+                {
+                    Code = "NotEmpty",
+                    Message = $"Name cannot ve empty",
+                    Type = MessageType.Error
+                });
+            }
+
             var organization = new Organization
             {
                 Name = request.Name,
@@ -55,7 +67,20 @@ namespace PeopleManager.Services
             _dbContext.Organizations.Add(organization);
             await _dbContext.SaveChangesAsync();
 
-            return await Get(organization.Id);
+            var result = await Get(organization.Id);
+            
+            serviceResult.Data = result;
+            
+            if(serviceResult is null)
+            {
+                serviceResult.Messages.Add(new ServiceMessage
+                {
+                    Code = "NotFound",
+                    Message = $"Could not find Organization for Id {organization.Id}",
+                    Type = MessageType.Error
+                });
+            }
+            return serviceResult;
         }
 
         //Update
